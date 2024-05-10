@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import {Link} from'react-router-dom'
+import { Link } from 'react-router-dom';
 function Pagination() {
     const [vulnerabilities, setVulnerabilities] = useState([]);
     const [totalRecords, setTotalRecords] = useState(0);
@@ -13,7 +13,7 @@ function Pagination() {
 
     async function fetchData() {
         try {
-            const response = await axios.get(`http://localhost:3000/get`);
+            const response = await axios.get(`http://localhost:3000/send`);
             setTotalRecords(response.data[0].vulnerabilities.length);
             const startIndex = (currentPage - 1) * resultsPerPage;
             const endIndex = startIndex + resultsPerPage;
@@ -22,7 +22,6 @@ function Pagination() {
             console.error("Error fetching data:", error);
         }
     }
-
 
     function handlePageChange(pageNumber) {
         setCurrentPage(pageNumber);
@@ -33,17 +32,14 @@ function Pagination() {
         setCurrentPage(1); // Reset currentPage to 1 when resultsPerPage changes
     }
 
+    const totalPages = Math.ceil(totalRecords / resultsPerPage);
+
+
     return (
-        <div className="container">
-            <h2>CVE List</h2>
-            <p>Total Records: {totalRecords}</p>
-            <select value={resultsPerPage} onChange={handleResultsPerPageChange}>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                {/* Add more options if needed */}
-            </select>
-            <table className="table table-bordered ">
+        <div className="container my-5 ">
+            <h2 className='text-center'>CVE List</h2><br />
+            <p ><b>Total Records: {totalRecords}</b></p>
+            <table className="table table-bordered text-center">
                 <thead>
                     <tr>
                         <th>CVE ID</th>
@@ -55,27 +51,57 @@ function Pagination() {
                 </thead>
                 <tbody>
                     {vulnerabilities.map((cve, index) => (
-                        <tr key = { index }>
-                            <td><Link to={`/details/${cve.cve.id}`}>{cve.cve.id}</Link></td>
-                                <td>{cve.cve.sourceIdentifier}</td>
-                                <td>{cve.cve.published}</td>
-                                <td>{cve.cve.lastModified}</td>
-                                <td>{cve.cve.vulnStatus}</td>
+                        <tr key={index}>
+                            <td><Link to={`/cves/${cve.cve.id}`} className="link-custom">{cve.cve.id}</Link></td>
+                            <td><Link to={`/cves/${cve.cve.id}`} className="link-custom">{cve.cve.sourceIdentifier}</Link></td>
+                            <td><Link to={`/cves/${cve.cve.id}`} className="link-custom">{cve.cve.published}</Link></td>
+                            <td><Link to={`/cves/${cve.cve.id}`} className="link-custom">{cve.cve.lastModified}</Link></td>
+                            <td><Link to={`/cves/${cve.cve.id}`} className="link-custom">{cve.cve.vulnStatus}</Link></td>
                         </tr>
                     ))}
                 </tbody>
+
             </table>
-            <nav>
-                <ul className="pagination">
-                    {Array.from({ length: Math.ceil(totalRecords / resultsPerPage) }, (_, i) => (
-                        <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                            <button className="page-link" onClick={() => handlePageChange(i + 1)}>
-                                {i + 1}
-                            </button>
+            <div className="row">
+                <div className="col-2">
+                    <select id="inputState" className="form-select" value={resultsPerPage} onChange={handleResultsPerPageChange} >
+                        <option selected value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                {/* <div className="col">
+                    {totalRecords}
+                </div> */}
+                <div className='col-6 ms-auto '>
+                    <ul className="pagination">
+                        <li>
+                            <button className="page-link" onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage == 1)}>Previous</button>
                         </li>
-                    ))}
-                </ul>
-            </nav>
+                        {Array.from({ length: Math.min(totalPages, 4) }, (_, i) => (
+                            <li key={i + 1}>
+                                <button className="page-link" onClick={() => handlePageChange(i + 1)}>
+                                    {i + 1}
+                                </button>
+                            </li>
+                        ))}
+                        {currentPage > 4 && (
+                            <li>
+                                <button className="page-link" onClick={() => handlePageChange(currentPage)}>{currentPage}</button>
+                            </li>
+                        )}
+                        <li>
+                            <button className="page-link">....</button>
+                        </li>
+                        <li>
+                            <button className="page-link" onClick={() => handlePageChange(totalPages)}>{totalPages}</button>
+                        </li>
+                        <li>
+                            <button className="page-link" onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}>Next</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 }

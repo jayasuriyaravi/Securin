@@ -10,8 +10,8 @@ function App() {
     <>
       <Router>
           <Routes>
-            <Route exact path="/" element={<Pagination />} />
-            <Route path="/details/:id" element={< CveDetails/>} />
+            <Route exact path="/cves/list" element={<Pagination />} />
+            <Route path="/cves/:id" element={< CveDetails/>} />
           </Routes>
       </Router>
     </>

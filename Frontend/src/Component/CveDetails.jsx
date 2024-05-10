@@ -24,17 +24,17 @@ function CveDetails() {
     }
 
     return (
-        <div className="container">
-            <h1>{id}</h1>
-            <div className="row Description">
-                <h1>Description</h1>
+        <div className="container my-5">
+            <h1 className='mb-4'>{id}</h1>
+            <div className="row Description my-2">
+                <p className='fw-bold'>Description:</p>
                 <p>{cveDetails.descriptions[0].value}</p>
             </div>
-            <div className="metrics row">
-                <h1>CVSS V2 Metrics</h1>
-                <p><b>Severity: </b>{cveDetails.metrics.cvssMetricV2[0].baseSeverity}<span><b>Score:</b> {cveDetails.metrics.cvssMetricV2[0].cvssData.baseScore}</span></p>
-                <p> <b> Vector String:</b> {cveDetails.metrics.cvssMetricV2[0].cvssData.vectorString}</p>
-                <table className="table table-bordered">
+            <div className="metrics row my-2">
+                <p className='fw-bold'>CVSS V2 Metrics</p>
+                <p><b className='me-3'>Severity:</b>{cveDetails.metrics.cvssMetricV2[0].baseSeverity} <span className='ms-5'><b className='me-3'>Score: </b>{cveDetails.metrics.cvssMetricV2[0].cvssData.baseScore}</span></p>
+                <p><b className='me-3'>Vector String:</b> {cveDetails.metrics.cvssMetricV2[0].cvssData.vectorString}</p>
+                <table className="table table-bordered text-center">
                     <thead>
                         <tr>
                             <th>Access Vector</th>
@@ -57,13 +57,14 @@ function CveDetails() {
                     </tbody>
                 </table>
             </div>
-            <div className="row score">
-                <p><b>Exploibility Score: </b>{cveDetails.metrics.cvssMetricV2[0].exploitabilityScore}</p>
-                <p><b>Impact Score: </b>{cveDetails.metrics.cvssMetricV2[0].impactScore}</p>
+            <div className="row score my-3">
+                <p className='fw-bold'>SCORE:</p>
+                <p><b className='me-3'>Exploibility Score: </b>{cveDetails.metrics.cvssMetricV2[0].exploitabilityScore}</p>
+                <p><b className='me-3'>Impact Score: </b>{cveDetails.metrics.cvssMetricV2[0].impactScore}</p>
             </div>
-            <div className="row cpe">
-                <h1>Configurations</h1>
-                <table className="table table-bordered">
+            <div className="row cpe my-3">
+                <p className='fw-bold'>CPE:</p>
+                <table className="table table-bordered text-center">
                     <thead>
                         <tr>
                             <th>Criteria</th>
@@ -72,17 +73,14 @@ function CveDetails() {
                         </tr>
                     </thead>
                     <tbody>
-                        {cveDetails.configurations.map((configuration, index) => (
-                            configuration.nodes.map((node, nodeIndex) => (
-                                node.cpeMatch.map((match, matchIndex) => (
-                                    <tr key={index + '-' + nodeIndex + '-' + matchIndex}>
-                                        <td>{match.criteria}</td>
-                                        <td>{match.matchCriteriaId}</td>
-                                        <td>{match.vulnerable.toString()}</td>
-                                    </tr>
-                                ))
-                            ))
-                        ))}
+                        {cveDetails.configurations[0].nodes[0].cpeMatch.map((match, matchIndex) => (
+                            <tr key={matchIndex}>
+                                <td>{match.criteria}</td>
+                                <td>{match.matchCriteriaId}</td>
+                                <td>{match.vulnerable ? "Yes" : "No"}</td>
+                            </tr>
+                        ))
+                        }
                     </tbody>
 
                 </table>
